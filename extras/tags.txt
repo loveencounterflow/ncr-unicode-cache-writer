@@ -1,0 +1,53 @@
+
+# Asssociations between Range Sigils (RSGs) or codepoint intervals and tags
+
+
+u-cjk              cjk ideograph                            # block: CJK Unified Ideographs
+#...........................................................................................................
+u-cjk-xa           cjk ideograph                            # block: CJK Unified Ideographs Extension A
+u-cjk-xb           cjk ideograph                            # block: CJK Unified Ideographs Extension B
+u-cjk-xc           cjk ideograph                            # block: CJK Unified Ideographs Extension C
+u-cjk-xd           cjk ideograph                            # block: CJK Unified Ideographs Extension D
+u-cjk-xe           cjk ideograph                            # block: CJK Unified Ideographs Extension E
+# u-cjk-xf           cjk ideograph                            # block: CJK Unified Ideographs Extension F
+#...........................................................................................................
+u-cjk-idc          cjk idl                                  # block: Ideographic Description Characters
+u-cjk-sym          cjk punctuation                          # block: CJK Symbols and Punctuation
+u-cjk-strk         cjk stroke                               # block: CJK Strokes
+u-cjk-enclett      cjk                                      # block: Enclosed CJK Letters and Months
+#...........................................................................................................
+u-cjk-rad1         cjk ideograph kxr                        # block: Kangxi Radicals
+u-cjk-rad2         cjk ideograph                            # block: CJK Radicals Supplement
+#...........................................................................................................
+u-cjk-hira         cjk japanese kana hiragana               # block: Hiragana
+u-cjk-kata         cjk japanese kana katakana               # block: Katakana
+u-cjk-kanbun       cjk japanese kanbun                      # block: Kanbun
+u-cjk-kata-x       cjk japanese kana katakana               # block: Katakana Phonetic Extensions
+#...........................................................................................................
+u-hang-jm          cjk korean hangeul jamo                  # block: Hangul Jamo
+u-hang-syl         cjk korean hangeul syllable              # block: Hangul Syllables
+u-hang-jm-xa       cjk korean hangeul jamo                  # block: Hangul Jamo Extended-A
+u-hang-jm-xb       cjk korean hangeul jamo                  # block: Hangul Jamo Extended-B
+#...........................................................................................................
+u-bopo             cjk bopomofo                             # block: Bopomofo
+u-bopo-x           cjk bopomofo                             # block: Bopomofo Extended
+#...........................................................................................................
+u-cjk-cmpf         cjk vertical                             # block: CJK Compatibility Forms
+^fe45..fe46        -vertical
+^fe49..fe4f        -vertical
+u-vertf            cjk vertical                             # block: Vertical Forms
+#...........................................................................................................
+u-sym                                                       # block: Miscellaneous Symbols
+^262f..2637        cjk
+^2630..2637        cjk yijing trigram
+u-yijng            cjk yijing hexagram                      # block: Yijing Hexagram Symbols
+u-txj-sym          cjk yijing taixuanjing tetragram         # block: Tai Xuan Jing Symbols
+^1d357..1d35f      -* reserved
+#...........................................................................................................
+u-cjk-cmpi1        cjk                                      # block: CJK Compatibility Ideographs
+u-hang-comp-jm     cjk                                      # block: Hangul Compatibility Jamo
+u-cjk-cmp          cjk                                      # block: CJK Compatibility
+u-cjk-cmpi2        cjk                                      # block: CJK Compatibility Ideographs Supplement
+#...........................................................................................................
+u-pua                                                       # block: Private Use Area
+

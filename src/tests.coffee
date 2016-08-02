@@ -15,8 +15,7 @@ help                      = CND.get_logger 'help',      badge
 urge                      = CND.get_logger 'urge',      badge
 echo                      = CND.echo.bind CND
 #...........................................................................................................
-suspend                   = require 'coffeenode-suspend'
-step                      = suspend.step
+{ step }                  = require 'coffeenode-suspend'
 #...........................................................................................................
 test                      = require 'guy-test'
 ### short for 'cache writer': ###
@@ -47,6 +46,7 @@ s   = ( x ) -> JSON.stringify x
 @[ "demo" ] = ( T, done ) ->
   step ( resume ) =>
     yield CW.main resume
+    help 'ok'
     done()
   #.........................................................................................................
   return null
