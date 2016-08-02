@@ -1,0 +1,39 @@
+{
+  "name": "ncr-unicode-cache-writer",
+  "version": "0.0.1",
+  "description": "Write Unicode data cache for https://github.com/loveencounterflow/ncr",
+  "main": "lib/main.js",
+  "scripts": {
+    "build": "coffee --map -o lib -c src",
+    "push": "git add . && git commit -m'update' && git push",
+    "doctoc": "doctoc README.md",
+    "pub": "npm run build && npm run doctoc && npm run push && npm version patch && npm publish",
+    "test-travis": "node lib/tests.js",
+    "test": "npm run build && node lib/tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/loveencounterflow/ncr-unicode-cache-writer.git"
+  },
+  "keywords": [
+    "Unicode",
+    "text",
+    "ncr",
+    "characters",
+    "numerical",
+    "character",
+    "reference"
+  ],
+  "author": "loveencounterflow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/loveencounterflow/ncr-unicode-cache-writer/issues"
+  },
+  "homepage": "https://github.com/loveencounterflow/ncr-unicode-cache-writer",
+  "dependencies": {
+    "cnd": "^4.1.1"
+  },
+  "devDependencies": {
+    "guy-test": "^1.2.3"
+  }
+}
