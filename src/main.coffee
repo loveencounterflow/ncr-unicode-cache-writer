@@ -22,47 +22,62 @@ D                         = require 'pipedreams'
 { $, $async, }            = D
 require 'pipedreams/lib/plugin-tsv'
 # require 'pipedreams/lib/plugin-tabulate'
+#...........................................................................................................
+suspend                   = require 'coffeenode-suspend'
+step                      = suspend.step
 
 
 #===========================================================================================================
 # HELPERS
 #-----------------------------------------------------------------------------------------------------------
-resolve     = ( path ) -> PATH.resolve __dirname, path
+resolve     = ( path ) -> PATH.resolve __dirname, '..', path
 resolve_ucd = ( path ) -> resolve PATH.join 'Unicode-UCD-9.0.0', path
+
+#-----------------------------------------------------------------------------------------------------------
+@$show = ( S ) => $ ( x ) => urge JSON.stringify x
+
+
+#===========================================================================================================
+# TRANSFORMS
+#-----------------------------------------------------------------------------------------------------------
+@$block_interval_from_line = ( S ) =>
+  type    = 'block'
+  pattern = /^([0-9a-f]{4,6})\.\.([0-9a-f]{4,6});\s+(.+)$/i
+  return $ ( [ line, ], send ) =>
+    match = line.match pattern
+    return send.error new Error "not a valid line: #{rpr line}" unless match?
+    [ _, lo_hex, hi_hex, short_name, ] = match
+    lo    = parseInt lo_hex, 16
+    hi    = parseInt hi_hex, 16
+    name  = "#{type}:#{short_name}"
+    send { lo, hi, name, type: type, "#{type}": short_name, }
+  #.........................................................................................................
+  return null
 
 
 #===========================================================================================================
 #
 #-----------------------------------------------------------------------------------------------------------
-@read_block_names = ( S ) ->
+@read_block_names = ( S, handler ) ->
   path    = resolve_ucd 'Blocks.txt'
   input   = D.new_stream { path, }
-  # sink    = D.new_stream 'devnull'
-  done    = -> urge 'ok'
-  #.........................................................................................................
-  $split_fields = =>
-    pattern = /^([0-9a-f]{4,6})\.\.([0-9a-f]{4,6});\s+(.+)$/i
-    return $ ( [ line, ], send ) =>
-      match = line.match pattern
-      return send.error new Error "not a valid line: #{rpr line}" unless match?
-      [ _, lo_hex, hi_hex, name, ] = match
-      lo = parseInt lo_hex, 16
-      hi = parseInt hi_hex, 16
-      send { lo, hi, name, }
   #.........................................................................................................
   input
-    # .pipe D.$split()
     .pipe D.$split_tsv()
-    .pipe $split_fields()
-    .pipe $ ( interval ) => urge JSON.stringify interval
-    .pipe $ 'finish', done
+    .pipe @$block_interval_from_line  S
+    .pipe @$show                      S
+    .pipe $ 'finish', handler
   #.........................................................................................................
   return null
 
 #-----------------------------------------------------------------------------------------------------------
-@main = ->
+@main = ( handler = null ) ->
   S = {}
-  @read_block_names S
+  step ( resume ) =>
+    yield @read_block_names S, resume
+    handler null if handler?
+  #.........................................................................................................
+  return null
 
 
 ############################################################################################################

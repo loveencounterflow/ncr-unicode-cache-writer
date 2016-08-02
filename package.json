@@ -31,7 +31,9 @@
   },
   "homepage": "https://github.com/loveencounterflow/ncr-unicode-cache-writer",
   "dependencies": {
-    "cnd": "^4.1.1"
+    "cnd": "^4.1.1",
+    "coffeenode-suspend": "^0.1.11",
+    "pipedreams": "^4.2.2"
   },
   "devDependencies": {
     "guy-test": "^1.2.3"
