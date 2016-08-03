@@ -148,6 +148,88 @@ append_tag = ( S, interval, tag ) ->
 #===========================================================================================================
 #
 #-----------------------------------------------------------------------------------------------------------
+@read_assigned_codepoints = ( S, handler ) ->
+  path                = resolve_ucd 'UnicodeData.txt'
+  input               = D.new_stream { path, }
+  #.........................................................................................................
+  input
+    .pipe D.$split_tsv splitter: ';'
+    .pipe $ ( fields,             send ) => send [ fields[ 0 ], fields[ 1 ], ]
+    .pipe $ ( [ cid_hex, name, ], send ) => send [ ( parseInt cid_hex, 16 ), name, ]
+    .pipe @$collect_intervals S
+    .pipe $ ( { lo, hi, } ) => urge ( lo.toString 16 ), ( hi.toString 16 )
+    # .pipe @$read_target_interval  S
+    # .pipe $ ( [ { lo, hi, }, type, short_name, ] ) =>
+    #   name      = "#{type}:#{short_name}"
+    #   interval  = { lo, hi, name, type: type, "#{type}": short_name, }
+    #   S.intervals.push interval
+    # .pipe $
+    .pipe $ 'finish', handler
+  #.........................................................................................................
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@$collect_intervals = ( S ) ->
+  last_interval_start = null
+  last_cid          = null
+  last_lo             = null
+  last_hi             = null
+  return $ 'null', ( entry, send ) =>
+    #.......................................................................................................
+    if entry?
+      [ cid, name, ] = entry
+      #.....................................................................................................
+      if ( name isnt '<control>' ) and ( name.startsWith '<' )
+        ### Explicit ranges are marked by `<XXXXX, First>` for the first and `<XXXXX, Last>` for the last
+        CID; these can be dealt with in a simplified manner: ###
+        #...................................................................................................
+        if name.endsWith 'First>'
+          if last_interval_start?
+            return send.error new Error "unexpected start of range #{rpr name}"
+          last_interval_start = cid
+        #...................................................................................................
+        else if name.endsWith 'Last>'
+          unless last_interval_start?
+            return send.error new Error "unexpected end of range #{rpr name}"
+          lo                  = last_interval_start
+          last_interval_start = null
+          hi                  = cid
+          send { lo, hi, }
+        #...................................................................................................
+        else
+          ### Any entry whose name starts with a `<` (less-than sign) should either have the symbolic
+          name of '<control>' or else demarcate a range boundary; everything else is an error: ###
+          return send.error new Error "unexpected name #{rpr name}"
+      #.....................................................................................................
+      else
+        ### Single point entries ###
+        ### TAINT Code duplication with `INTERVALSKIPLIST.intervals_from_points` ###
+        #...................................................................................................
+        unless last_lo?
+          last_lo     = cid
+          last_hi     = cid
+          last_cid    = cid
+          return null
+        #...................................................................................................
+        if cid is last_cid + 1
+          last_hi     = cid
+          last_cid    = cid
+          return null
+        #...................................................................................................
+        send { lo: last_lo, hi: last_hi, }
+        last_lo     = cid
+        last_hi     = cid
+        last_cid    = cid
+    #.......................................................................................................
+    else
+      send { lo: last_lo, hi: last_hi, } if last_lo? and last_hi?
+    #.......................................................................................................
+    return null
+
+
+#===========================================================================================================
+#
+#-----------------------------------------------------------------------------------------------------------
 @read_planes_and_areas = ( S, handler ) ->
   path                = resolve_extras 'planes-and-areas.txt'
   input               = D.new_stream { path, }
@@ -268,6 +350,7 @@ append_tag = ( S, interval, tag ) ->
   S         = { intervals, }
   #.........................................................................................................
   step ( resume ) =>
+    yield @read_assigned_codepoints   S, resume
     yield @read_planes_and_areas      S, resume
     yield @read_block_names           S, resume
     yield @read_rsgs_and_block_names  S, resume
