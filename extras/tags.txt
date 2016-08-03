@@ -52,7 +52,7 @@ u-sym                                                       # block: Miscellaneo
 ^2630..2637        cjk yijing trigram
 u-yijng            cjk yijing hexagram                      # block: Yijing Hexagram Symbols
 u-txj-sym          cjk yijing taixuanjing tetragram         # block: Tai Xuan Jing Symbols
-^1d357..1d35f      -* reserved
+# ^1d357..1d35f      -* reserved
 #...........................................................................................................
 u-cjk-cmpi1        cjk                                      # block: CJK Compatibility Ideographs
 u-hang-comp-jm     cjk                                      # block: Hangul Compatibility Jamo

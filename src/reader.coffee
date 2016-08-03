@@ -157,14 +157,14 @@ append_tag = ( S, interval, tag ) ->
     .pipe $ ( fields,             send ) => send [ fields[ 0 ], fields[ 1 ], ]
     .pipe $ ( [ cid_hex, name, ], send ) => send [ ( parseInt cid_hex, 16 ), name, ]
     .pipe @$collect_intervals S
-    .pipe $ ( { lo, hi, } ) => urge ( lo.toString 16 ), ( hi.toString 16 )
-    # .pipe @$read_target_interval  S
-    # .pipe $ ( [ { lo, hi, }, type, short_name, ] ) =>
-    #   name      = "#{type}:#{short_name}"
-    #   interval  = { lo, hi, name, type: type, "#{type}": short_name, }
-    #   S.intervals.push interval
-    # .pipe $
-    .pipe $ 'finish', handler
+    # .pipe $ ( { lo, hi, } ) => urge ( lo.toString 16 ), ( hi.toString 16 )
+    .pipe $ ( { lo, hi, }, send ) => send { lo, hi, tag: '-unassigned assigned', }
+    .pipe $ 'start', ( send ) => send { lo: 0x000000, hi: 0x10ffff, tag: 'unassigned', }
+    .pipe $ ( interval ) => S.intervals.push interval
+    # .pipe $ 'finish', handler
+    .pipe $ 'finish', =>
+      debug '3323', S.intervals.length
+      handler()
   #.........................................................................................................
   return null
 
@@ -223,6 +223,7 @@ append_tag = ( S, interval, tag ) ->
     #.......................................................................................................
     else
       send { lo: last_lo, hi: last_hi, } if last_lo? and last_hi?
+      send null
     #.......................................................................................................
     return null
 

@@ -99,10 +99,10 @@ s   = ( x ) -> JSON.stringify x
   #.........................................................................................................
   CW.read_isl ( error, isl ) =>
     throw error if error?
-    # for [ probe, matcher, ] in probes_and_matchers
-    #   echo s [ probe, ISL.aggregate isl, probe, reducers ]
     for [ probe, matcher, ] in probes_and_matchers
-      T.eq ( ISL.aggregate isl, probe, reducers ), matcher
+      echo s [ probe, ISL.aggregate isl, probe, reducers ]
+    # for [ probe, matcher, ] in probes_and_matchers
+    #   T.eq ( ISL.aggregate isl, probe, reducers ), matcher
     done()
   #.........................................................................................................
   return null
@@ -112,7 +112,7 @@ s   = ( x ) -> JSON.stringify x
 unless module.parent?
   include = [
     # "demo"
-    "superficial API test"
+    # "superficial API test"
     "test Unicode ISL against select codepoints"
     ]
   @_prune()
