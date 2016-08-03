@@ -48,30 +48,32 @@ ISL                       = require 'interskiplist'
     ISL.add isl, interval for interval in intervals
     handler null, isl
 
-# #===========================================================================================================
-# # MAIN
-# #-----------------------------------------------------------------------------------------------------------
-# @main = ( handler = null ) ->
-#   #.........................................................................................................
-#   S =
-#     intervals:        []
-#   #.........................................................................................................
-#   step ( resume ) =>
-#     yield @read_planes_and_areas      S, resume
-#     yield @read_block_names           S, resume
-#     yield @read_rsgs_and_block_names  S, resume
-#     yield @read_tags                  S, resume
-#     yield @write                      S, resume
-#     # debug '6592', S.interval_by_rsgs
-#     # debug '6592', S.intervals
-#     setImmediate ( => handler null ) if handler?
-#   #.........................................................................................................
-#   return null
+#===========================================================================================================
+# WRITE CACHES
+#-----------------------------------------------------------------------------------------------------------
+@write = ( S, handler = null ) ->
+  @read_intervals ( error, intervals ) =>
+    return handler error if error?
+    json = JSON.stringify intervals, null, '  '
+    echo json
+    handler() if handler?
+  #.........................................................................................................
+  return null
+
+  # write_to_file = no
+  # help "#{S.intervals.length} intervals"
+  # #.........................................................................................................
+  # if write_to_file
+  #   path = '/tmp/u-intervals.json'
+  #   FS.writeFile path, json, =>
+  #     help "written to #{path}"
+  #     handler()
+  # else
 
 
 ############################################################################################################
 unless module.parent?
-  @main()
+  @write()
 
 
 

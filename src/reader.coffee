@@ -163,7 +163,6 @@ append_tag = ( S, interval, tag ) ->
     .pipe $ ( interval ) => S.intervals.push interval
     # .pipe $ 'finish', handler
     .pipe $ 'finish', =>
-      debug '3323', S.intervals.length
       handler()
   #.........................................................................................................
   return null
@@ -323,26 +322,6 @@ append_tag = ( S, interval, tag ) ->
 
 
 #===========================================================================================================
-# WRITE CACHES
-#-----------------------------------------------------------------------------------------------------------
-@write = ( S, handler ) ->
-  json          = JSON.stringify S.intervals, null, '  '
-  write_to_file = no
-  help "#{S.intervals.length} intervals"
-  #.........................................................................................................
-  if write_to_file
-    path = '/tmp/u-intervals.json'
-    FS.writeFile path, json, =>
-      help "written to #{path}"
-      handler()
-  else
-    echo json
-    handler()
-  #.........................................................................................................
-  return null
-
-
-#===========================================================================================================
 # MAIN
 #-----------------------------------------------------------------------------------------------------------
 @read = ( handler ) ->
@@ -356,9 +335,6 @@ append_tag = ( S, interval, tag ) ->
     yield @read_block_names           S, resume
     yield @read_rsgs_and_block_names  S, resume
     yield @read_tags                  S, resume
-    # yield @write                      S, resume
-    # debug '6592', S.interval_by_rsgs
-    # debug '6592', S.intervals
     add_comments_to_intervals S
     handler null, S
   #.........................................................................................................

@@ -76,20 +76,27 @@ s   = ( x ) -> JSON.stringify x
 #-----------------------------------------------------------------------------------------------------------
 @[ "test Unicode ISL against select codepoints" ] = ( T, done ) ->
   probes_and_matchers = [
-    ["a",{"plane":"Basic Multilingual Plane (BMP)","area":"ASCII & Latin-1 Compatibility Area","block":"Basic Latin","rsg":"u-latn"}]
-    ["ä",{"plane":"Basic Multilingual Plane (BMP)","area":"ASCII & Latin-1 Compatibility Area","block":"Latin-1 Supplement","rsg":"u-latn-1"}]
-    ["ɐ",{"plane":"Basic Multilingual Plane (BMP)","area":"General Scripts Area","block":"IPA Extensions","rsg":"u-ipa-x"}]
-    ["ա",{"plane":"Basic Multilingual Plane (BMP)","area":"General Scripts Area","block":"Armenian"}]
-    ["三",{"plane":"Basic Multilingual Plane (BMP)","area":"CJKV Unified Ideographs Area","block":"CJK Unified Ideographs","rsg":"u-cjk","tag":["cjk","ideograph"]}]
-    ["ゆ",{"plane":"Basic Multilingual Plane (BMP)","area":"CJK Miscellaneous Area","block":"Hiragana","rsg":"u-cjk-hira","tag":["cjk","japanese","kana","hiragana"]}]
-    ["㈪",{"plane":"Basic Multilingual Plane (BMP)","area":"CJK Miscellaneous Area","block":"Enclosed CJK Letters and Months","rsg":"u-cjk-enclett","tag":["cjk"]}]
-    ["《",{"plane":"Basic Multilingual Plane (BMP)","area":"CJK Miscellaneous Area","block":"CJK Symbols and Punctuation","rsg":"u-cjk-sym","tag":["cjk","punctuation"]}]
-    ["》",{"plane":"Basic Multilingual Plane (BMP)","area":"CJK Miscellaneous Area","block":"CJK Symbols and Punctuation","rsg":"u-cjk-sym","tag":["cjk","punctuation"]}]
-    ["𫠠",{"plane":"Supplementary Ideographic Plane (SIP)","block":"CJK Unified Ideographs Extension E","rsg":"u-cjk-xe","tag":["cjk","ideograph"]}]
-    ["﹄",{"plane":"Basic Multilingual Plane (BMP)","area":"Compatibility and Specials Area","block":"CJK Compatibility Forms","rsg":"u-cjk-cmpf","tag":["cjk","vertical"]}]
-    ["﹅",{"plane":"Basic Multilingual Plane (BMP)","area":"Compatibility and Specials Area","block":"CJK Compatibility Forms","rsg":"u-cjk-cmpf","tag":["cjk"]}]
-    ["𝍖",{"plane":"Supplementary Multilingual Plane (SMP)","area":"Symbols Area","block":"Tai Xuan Jing Symbols","rsg":"u-txj-sym","tag":["cjk","yijing","taixuanjing","tetragram"]}]
-    ["𝍗",{"plane":"Supplementary Multilingual Plane (SMP)","area":"Symbols Area","block":"Tai Xuan Jing Symbols","rsg":"u-txj-sym","tag":["reserved"]}]
+    ["a",{"tag":["assigned"],"plane":"Basic Multilingual Plane (BMP)","area":"ASCII & Latin-1 Compatibility Area","block":"Basic Latin","rsg":"u-latn"}]
+    ["ä",{"tag":["assigned"],"plane":"Basic Multilingual Plane (BMP)","area":"ASCII & Latin-1 Compatibility Area","block":"Latin-1 Supplement","rsg":"u-latn-1"}]
+    ["ɐ",{"tag":["assigned"],"plane":"Basic Multilingual Plane (BMP)","area":"General Scripts Area","block":"IPA Extensions","rsg":"u-ipa-x"}]
+    ["ա",{"tag":["assigned"],"plane":"Basic Multilingual Plane (BMP)","area":"General Scripts Area","block":"Armenian"}]
+    ["三",{"tag":["assigned","cjk","ideograph"],"plane":"Basic Multilingual Plane (BMP)","area":"CJKV Unified Ideographs Area","block":"CJK Unified Ideographs","rsg":"u-cjk"}]
+    ["ゆ",{"tag":["assigned","cjk","japanese","kana","hiragana"],"plane":"Basic Multilingual Plane (BMP)","area":"CJK Miscellaneous Area","block":"Hiragana","rsg":"u-cjk-hira"}]
+    ["㈪",{"tag":["assigned","cjk"],"plane":"Basic Multilingual Plane (BMP)","area":"CJK Miscellaneous Area","block":"Enclosed CJK Letters and Months","rsg":"u-cjk-enclett"}]
+    ["《",{"tag":["assigned","cjk","punctuation"],"plane":"Basic Multilingual Plane (BMP)","area":"CJK Miscellaneous Area","block":"CJK Symbols and Punctuation","rsg":"u-cjk-sym"}]
+    ["》",{"tag":["assigned","cjk","punctuation"],"plane":"Basic Multilingual Plane (BMP)","area":"CJK Miscellaneous Area","block":"CJK Symbols and Punctuation","rsg":"u-cjk-sym"}]
+    ["𫠠",{"tag":["assigned","cjk","ideograph"],"plane":"Supplementary Ideographic Plane (SIP)","block":"CJK Unified Ideographs Extension E","rsg":"u-cjk-xe"}]
+    ["﹄",{"tag":["assigned","cjk","vertical"],"plane":"Basic Multilingual Plane (BMP)","area":"Compatibility and Specials Area","block":"CJK Compatibility Forms","rsg":"u-cjk-cmpf"}]
+    ["﹅",{"tag":["assigned","cjk"],"plane":"Basic Multilingual Plane (BMP)","area":"Compatibility and Specials Area","block":"CJK Compatibility Forms","rsg":"u-cjk-cmpf"}]
+    ["𝍖",{"tag":["assigned","cjk","yijing","taixuanjing","tetragram"],"plane":"Supplementary Multilingual Plane (SMP)","area":"Symbols Area","block":"Tai Xuan Jing Symbols","rsg":"u-txj-sym"}]
+    ["𝍗",{"tag":["unassigned","cjk","yijing","taixuanjing","tetragram"],"plane":"Supplementary Multilingual Plane (SMP)","area":"Symbols Area","block":"Tai Xuan Jing Symbols","rsg":"u-txj-sym"}]
+    ["𞹛",{"tag":["assigned"],"plane":"Supplementary Multilingual Plane (SMP)","area":"General Scripts Area (RTL)","block":"Arabic Mathematical Alphabetic Symbols"}]
+    ["𞹜",{"tag":["unassigned"],"plane":"Supplementary Multilingual Plane (SMP)","area":"General Scripts Area (RTL)","block":"Arabic Mathematical Alphabetic Symbols"}]
+    ["𞹝",{"tag":["assigned"],"plane":"Supplementary Multilingual Plane (SMP)","area":"General Scripts Area (RTL)","block":"Arabic Mathematical Alphabetic Symbols"}]
+    ["𞹞",{"tag":["unassigned"],"plane":"Supplementary Multilingual Plane (SMP)","area":"General Scripts Area (RTL)","block":"Arabic Mathematical Alphabetic Symbols"}]
+    ["𞹟",{"tag":["assigned"],"plane":"Supplementary Multilingual Plane (SMP)","area":"General Scripts Area (RTL)","block":"Arabic Mathematical Alphabetic Symbols"}]
+    ["𞹠",{"tag":["unassigned"],"plane":"Supplementary Multilingual Plane (SMP)","area":"General Scripts Area (RTL)","block":"Arabic Mathematical Alphabetic Symbols"}]
+    ["𞹡",{"tag":["assigned"],"plane":"Supplementary Multilingual Plane (SMP)","area":"General Scripts Area (RTL)","block":"Arabic Mathematical Alphabetic Symbols"}]
     ]
   #.........................................................................................................
   reducers =
@@ -99,10 +106,10 @@ s   = ( x ) -> JSON.stringify x
   #.........................................................................................................
   CW.read_isl ( error, isl ) =>
     throw error if error?
-    for [ probe, matcher, ] in probes_and_matchers
-      echo s [ probe, ISL.aggregate isl, probe, reducers ]
     # for [ probe, matcher, ] in probes_and_matchers
-    #   T.eq ( ISL.aggregate isl, probe, reducers ), matcher
+    #   echo s [ probe, ISL.aggregate isl, probe, reducers ]
+    for [ probe, matcher, ] in probes_and_matchers
+      T.eq ( ISL.aggregate isl, probe, reducers ), matcher
     done()
   #.........................................................................................................
   return null
@@ -112,7 +119,7 @@ s   = ( x ) -> JSON.stringify x
 unless module.parent?
   include = [
     # "demo"
-    # "superficial API test"
+    "superficial API test"
     "test Unicode ISL against select codepoints"
     ]
   @_prune()
