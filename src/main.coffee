@@ -27,14 +27,38 @@ require 'pipedreams/lib/plugin-tsv'
 
 
 #===========================================================================================================
+# PATTERNS
+#-----------------------------------------------------------------------------------------------------------
+ucd_range_pattern     = ///
+  ^                           # Start of line
+  ( [ 0-9 a-f ]{ 4, 6 } )     # ... hexadecimal number with 4 to 6 digits
+  \.\.                        # ... range marker: two full stops
+  ( [ 0-9 a-f ]{ 4, 6 })      # ... hexadecimal number with 4 to 6 digits
+  ;                           # ... semicolon
+  [ \x20 \t ]+                # ... mandatory whitespace
+  ( .+ )                      # ... anything (text content)
+  $                           # ... end of line
+  ///i
+
+#-----------------------------------------------------------------------------------------------------------
+extras_range_pattern = ///
+  ^                           # Start of line
+  \^                          # ... a caret
+  ( [ 0-9 a-f ]{ 1, 6 } )     # ... hexadecimal number with 1 to 6 digits
+  (?:                         # (start optional)
+    \.\.                        # ... range marker: two full stops
+    ( [ 0-9 a-f ]{ 1, 6 } )     # ... hexadecimal number with 1 to 6 digits
+    )?                          # (end optional)
+  $                           # ... end of line
+  ///i
+
+
+#===========================================================================================================
 # HELPERS
 #-----------------------------------------------------------------------------------------------------------
 resolve         = ( path ) -> PATH.resolve __dirname,                 '..', path
 resolve_ucd     = ( path ) -> resolve PATH.join 'Unicode-UCD-9.0.0',        path
 resolve_extras  = ( path ) -> resolve PATH.join 'extras',                   path
-
-#-----------------------------------------------------------------------------------------------------------
-@$show = ( S ) => $ ( x ) => urge JSON.stringify x
 
 #-----------------------------------------------------------------------------------------------------------
 interval_from_block_name = ( S, rsg, block_name ) ->
@@ -50,6 +74,13 @@ interval_from_rsg = ( S, rsg ) ->
   return R
 
 #-----------------------------------------------------------------------------------------------------------
+interval_from_range_match = ( match ) ->
+  [ _, lo_hex, hi_hex, ]  = match
+  lo                      = parseInt lo_hex, 16
+  hi                      = if ( hi_hex? and hi_hex.length > 0 ) then ( parseInt hi_hex, 16 ) else lo
+  return { lo, hi, }
+
+#-----------------------------------------------------------------------------------------------------------
 append_tag = ( S, interval, tag ) ->
   if ( target = interval[ 'tag' ] )?
     if CND.isa_list target
@@ -62,36 +93,10 @@ append_tag = ( S, interval, tag ) ->
 
 
 #===========================================================================================================
-# TRANSFORMS
+# HELPER TRANSFORMS
 #-----------------------------------------------------------------------------------------------------------
-@$block_interval_from_line = ( S ) =>
-  type    = 'block'
-  pattern = /^([0-9a-f]{4,6})\.\.([0-9a-f]{4,6});\s+(.+)$/i
-  return $ ( [ line, ], send ) =>
-    match = line.match pattern
-    return send.error new Error "not a valid line: #{rpr line}" unless match?
-    [ _, lo_hex, hi_hex, short_name, ] = match
-    lo    = parseInt lo_hex, 16
-    hi    = parseInt hi_hex, 16
-    name  = "#{type}:#{short_name}"
-    send { lo, hi, name, type: type, "#{type}": short_name, }
-  #.........................................................................................................
-  return null
-
-#-----------------------------------------------------------------------------------------------------------
-@$read_target_and_tag = ( S ) =>
-  range_pattern = /^\^([0-9a-f]{1,6})(?:\.\.([0-9a-f]{4,6}))?$/i
-  return $ ( [ rsg_or_range, tag, ], send ) =>
-    if ( match = rsg_or_range.match range_pattern )?
-      [ _, lo_hex, hi_hex, ]  = match
-      lo                      = parseInt lo_hex, 16
-      hi                      = if ( hi_hex? and hi_hex.length > 0 ) then ( parseInt hi_hex, 16 ) else lo
-      S.intervals.push { lo, hi, tag, }
-    else
-      interval = interval_from_rsg S, rsg_or_range
-      append_tag S, interval, tag
-  #.........................................................................................................
-  return null
+@$show                  = ( S ) => $ ( x ) => urge JSON.stringify x
+@$split_multi_blank_sv  = ( S ) -> D.$split_tsv splitter: /\t{1,}|[\x20\t]{2,}/g
 
 
 #===========================================================================================================
@@ -106,16 +111,62 @@ append_tag = ( S, interval, tag ) ->
   input
     .pipe D.$split_tsv()
     # .pipe D.$sample 1 / 10, seed: 872
-    .pipe @$block_interval_from_line  S
+    .pipe @$block_interval_from_line S
     .pipe $ ( interval ) =>
-      { "#{type}": name, }      = interval
-      S.interval_by_names[ name ]  = interval
+      { "#{type}": name, }        = interval
+      S.interval_by_names[ name ] = interval
       S.intervals.push interval
-    # .pipe @$show                      S
+    # .pipe @$show S
     .pipe $ 'finish', handler
   #.........................................................................................................
   return null
 
+#-----------------------------------------------------------------------------------------------------------
+@$block_interval_from_line = ( S ) =>
+  type    = 'block'
+  return $ ( [ line, ], send ) =>
+    match = line.match ucd_range_pattern
+    return send.error new Error "not a valid line: #{rpr line}" unless match?
+    [ _, lo_hex, hi_hex, short_name, ] = match
+    lo    = parseInt lo_hex, 16
+    hi    = parseInt hi_hex, 16
+    name  = "#{type}:#{short_name}"
+    send { lo, hi, name, type: type, "#{type}": short_name, }
+  #.........................................................................................................
+  return null
+
+
+#===========================================================================================================
+#
+#-----------------------------------------------------------------------------------------------------------
+@read_planes_and_areas = ( S, handler ) ->
+  path                = resolve_extras 'planes-and-areas.txt'
+  input               = D.new_stream { path, }
+  #.........................................................................................................
+  input
+    .pipe @$split_multi_blank_sv  S
+    .pipe @$read_target_interval  S
+    .pipe $ ( [ { lo, hi, }, type, short_name, ] ) =>
+      name      = "#{type}:#{short_name}"
+      interval  = { lo, hi, name, type: type, "#{type}": short_name, }
+      S.intervals.push interval
+    .pipe $ 'finish', handler
+  #.........................................................................................................
+  return null
+
+#-----------------------------------------------------------------------------------------------------------
+@$read_target_interval = ( S ) =>
+  return $ ( [ range, type, name, ], send ) =>
+    unless ( match = range.match extras_range_pattern )?
+      return send.error new Error "illegal line format; expected range, found #{rpr range}"
+    interval = interval_from_range_match match
+    send [ interval, type, name, ]
+  #.........................................................................................................
+  return null
+
+
+#===========================================================================================================
+#
 #-----------------------------------------------------------------------------------------------------------
 @read_rsgs_and_block_names = ( S, handler ) ->
   path                = resolve_extras 'rsgs.txt'
@@ -123,7 +174,7 @@ append_tag = ( S, interval, tag ) ->
   S.interval_by_rsgs  = {}
   #.........................................................................................................
   input
-    .pipe D.$split_tsv splitter: /[\x20\t]{2,}/g
+    .pipe @$split_multi_blank_sv S
     # .pipe D.$sample 1 / 40, seed: 872
     .pipe $ ( [ rsg, block_name, ] ) =>
       interval                  = interval_from_block_name S, rsg, block_name
@@ -133,19 +184,37 @@ append_tag = ( S, interval, tag ) ->
   #.........................................................................................................
   return null
 
+
+#===========================================================================================================
+#
 #-----------------------------------------------------------------------------------------------------------
 @read_tags = ( S, handler ) ->
   path                = resolve_extras 'tags.txt'
   input               = D.new_stream { path, }
   #.........................................................................................................
   input
-    .pipe D.$split_tsv splitter: /[\x20\t]{2,}/g
-    # .pipe D.$show()
-    .pipe @$read_target_and_tag S
+    .pipe @$split_multi_blank_sv  S
+    .pipe @$read_rsg_or_range     S
     .pipe $ 'finish', handler
   #.........................................................................................................
   return null
 
+#-----------------------------------------------------------------------------------------------------------
+@$read_rsg_or_range = ( S ) =>
+  return $ ( [ rsg_or_range, tag, ], send ) =>
+    if ( match = rsg_or_range.match extras_range_pattern )?
+      interval          = interval_from_range_match match
+      interval[ 'tag' ] = tag
+      S.intervals.push interval
+    else
+      interval = interval_from_rsg S, rsg_or_range
+      append_tag S, interval, tag
+  #.........................................................................................................
+  return null
+
+
+#===========================================================================================================
+# WRITE CACHES
 #-----------------------------------------------------------------------------------------------------------
 @write = ( S, handler ) ->
   # path                = resolve_extras 'tags.txt'
@@ -158,6 +227,9 @@ append_tag = ( S, interval, tag ) ->
   #.........................................................................................................
   return null
 
+
+#===========================================================================================================
+# MAIN
 #-----------------------------------------------------------------------------------------------------------
 @main = ( handler = null ) ->
   #.........................................................................................................
@@ -165,6 +237,7 @@ append_tag = ( S, interval, tag ) ->
     intervals:        []
   #.........................................................................................................
   step ( resume ) =>
+    yield @read_planes_and_areas      S, resume
     yield @read_block_names           S, resume
     yield @read_rsgs_and_block_names  S, resume
     yield @read_tags                  S, resume

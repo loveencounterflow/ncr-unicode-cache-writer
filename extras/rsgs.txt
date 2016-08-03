@@ -1,5 +1,13 @@
 
-# Asssociations between 'range sigils' (RSGs) and Unicode Block names
+# # Asssociations between 'range sigils' (RSGs) and Unicode Block names
+
+# NOTE: Fields are separated by
+#
+# — *one* or more tabs (U+0009), or
+# — *two* or more spaces (U+0020), or
+#
+# combinations thereof.
+
 
 u-abc-pf                                Alphabetic Presentation Forms
 u-arab                                  Arabic
@@ -72,6 +80,8 @@ u-olck                                  Ol Chiki
 u-phon-x                                Phonetic Extensions
 u-phon-xs                               Phonetic Extensions Supplement
 u-pua                                   Private Use Area
+u-pua-xa                                Supplementary Private Use Area-A
+u-pua-xb                                Supplementary Private Use Area-B
 u-punct                                 General Punctuation
 u-punct-s                               Supplemental Punctuation
 u-small                                 Small Form Variants
