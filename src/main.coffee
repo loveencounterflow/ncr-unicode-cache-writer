@@ -29,8 +29,14 @@ ISL                       = require 'interskiplist'
 @READER                   = require './reader'
 
 #-----------------------------------------------------------------------------------------------------------
-@read_intervals = ( handler ) ->
+@read = ( handler ) ->
   @READER.read ( error, S ) =>
+    return handler error if error?
+    handler null, S
+
+#-----------------------------------------------------------------------------------------------------------
+@read_intervals = ( handler ) ->
+  @read ( error, S ) =>
     return handler error if error?
     handler null, S.intervals
 

@@ -53,6 +53,27 @@ s   = ( x ) -> JSON.stringify x
   return null
 
 #-----------------------------------------------------------------------------------------------------------
+@[ "superficial API test" ] = ( T, done ) ->
+  step ( resume ) =>
+    S         = yield CW.read           resume
+    intervals = yield CW.read_intervals resume
+    #.......................................................................................................
+    # debug '3984', Object.keys S
+    T.eq ( Object.keys S ), [ 'intervals', 'interval_by_names', 'interval_by_rsgs', ]
+    T.eq S.intervals, intervals
+    T.ok S.intervals isnt intervals
+    #.......................................................................................................
+    isl_1     = yield CW.read_isl       resume
+    isl_2     = ISL.new()
+    ISL.add isl_2, interval for interval in intervals
+    delete isl_1[ '%self' ]
+    delete isl_2[ '%self' ]
+    T.eq isl_1, isl_2
+    help 'ok'
+    #.......................................................................................................
+    done()
+
+#-----------------------------------------------------------------------------------------------------------
 @[ "test Unicode ISL against select codepoints" ] = ( T, done ) ->
   probes_and_matchers = [
     ["a",{"plane":"Basic Multilingual Plane (BMP)","area":"ASCII & Latin-1 Compatibility Area","block":"Basic Latin","rsg":"u-latn"}]
@@ -92,6 +113,7 @@ s   = ( x ) -> JSON.stringify x
 unless module.parent?
   include = [
     # "demo"
+    "superficial API test"
     "test Unicode ISL against select codepoints"
     ]
   @_prune()
