@@ -49,3 +49,6 @@
 ^1d000..1e7ff       area        Symbols Area
 ^1e800..1efff       area        General Scripts Area (RTL)
 ^1f000..1ffff       area        Symbols Area
+
+# EOF
+

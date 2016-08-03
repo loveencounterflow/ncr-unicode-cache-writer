@@ -33,6 +33,7 @@
   "dependencies": {
     "cnd": "^4.1.1",
     "coffeenode-suspend": "^0.1.11",
+    "interskiplist": "^0.2.11",
     "pipedreams": "^4.2.3"
   },
   "devDependencies": {
