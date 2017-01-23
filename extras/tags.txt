@@ -38,6 +38,7 @@ u-hang-jm          cjk korean hangeul jamo                  # block: Hangul Jamo
 u-hang-syl         cjk korean hangeul syllable              # block: Hangul Syllables
 u-hang-jm-xa       cjk korean hangeul jamo                  # block: Hangul Jamo Extended-A
 u-hang-jm-xb       cjk korean hangeul jamo                  # block: Hangul Jamo Extended-B
+u-hang-comp-jm     cjk korean hangeul jamo                  # block: Hangul Compatibility Jamo
 #...........................................................................................................
 u-bopo             cjk bopomofo                             # block: Bopomofo
 u-bopo-x           cjk bopomofo                             # block: Bopomofo Extended
@@ -53,10 +54,9 @@ u-sym                                                       # block: Miscellaneo
 u-yijng            cjk yijing hexagram                      # block: Yijing Hexagram Symbols
 u-txj-sym          cjk yijing taixuanjing tetragram         # block: Tai Xuan Jing Symbols
 #...........................................................................................................
-u-cjk-cmpi1        cjk                                      # block: CJK Compatibility Ideographs
-u-hang-comp-jm     cjk                                      # block: Hangul Compatibility Jamo
 u-cjk-cmp          cjk                                      # block: CJK Compatibility
-u-cjk-cmpi2        cjk                                      # block: CJK Compatibility Ideographs Supplement
+u-cjk-cmpi1        cjk ideograph                            # block: CJK Compatibility Ideographs
+u-cjk-cmpi2        cjk ideograph                            # block: CJK Compatibility Ideographs Supplement
 #...........................................................................................................
 u-pua              pua                                      # block: Private Use Area
 u-pua-xa           pua                                      # Supplementary Private Use Area-A
