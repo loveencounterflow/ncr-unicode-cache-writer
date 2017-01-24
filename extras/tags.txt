@@ -22,7 +22,6 @@ u-cjk-xe           cjk ideograph                            # block: CJK Unified
 # u-cjk-xf           cjk ideograph                            # block: CJK Unified Ideographs Extension F
 #...........................................................................................................
 u-cjk-idc          cjk idl                                  # block: Ideographic Description Characters
-u-cjk-sym          cjk punctuation                          # block: CJK Symbols and Punctuation
 u-cjk-strk         cjk stroke                               # block: CJK Strokes
 u-cjk-enclett      cjk                                      # block: Enclosed CJK Letters and Months
 #...........................................................................................................
@@ -62,4 +61,24 @@ u-pua              pua                                      # block: Private Use
 u-pua-xa           pua                                      # Supplementary Private Use Area-A
 u-pua-xb           pua                                      # Supplementary Private Use Area-B
 #...........................................................................................................
+u-cjk-sym          cjk                                      # block: CJK Symbols and Punctuation
+^3001..3003        punctuation                              # 、。〃
+^3004..3004        symbol                                   # 〄
+^3005..3007        ideograph                                # 々〆〇
+^3008..3011        punctuation                              # 〈〉《》「」『』【】
+^3012..3012        symbol                                   # 〒
+^3013..3013        ideograph geta                           # 〓
+^3014..301f        punctuation                              # 〔〕〖〗〘〙〚〛〜〝〞〟
+^3020..3020        symbol                                   # 〠
+^3021..3029        ideograph                                # 〡〢〣〤〥〦〧〨〩
+^302a..3030        punctuation                              # 〪〭〮〯〫〬〰
+^3031..3035        kana                                     # 〱〲〳〴〵
+^3036..3037        symbol                                   # 〶〷
+^3038..303c        ideograph                                # 〸〹〺〻〼〽
+^303d..303d        symbol                                   # 〽
+
+
+
+
+
 
