@@ -31,12 +31,12 @@
   },
   "homepage": "https://github.com/loveencounterflow/ncr-unicode-cache-writer",
   "dependencies": {
-    "cnd": "^4.1.2",
+    "cnd": "^4.2.2",
     "coffeenode-suspend": "^0.1.11",
     "interskiplist": "^0.2.15",
     "pipedreams": "^4.2.3"
   },
   "devDependencies": {
-    "guy-test": "^1.2.3"
+    "guy-test": "^1.3.3"
   }
 }
