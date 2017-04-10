@@ -22,8 +22,11 @@ u-cjk-xe           cjk ideograph                            # block: CJK Unified
 # u-cjk-xf           cjk ideograph                            # block: CJK Unified Ideographs Extension F
 #...........................................................................................................
 u-cjk-idc          cjk idl                                  # block: Ideographic Description Characters
-u-cjk-strk         cjk stroke                               # block: CJK Strokes
+u-cjk-strk         cjk stroke ideograph                     # block: CJK Strokes
+#...........................................................................................................
 u-cjk-enclett      cjk                                      # block: Enclosed CJK Letters and Months
+^3220..3247        cjk ideograph                            # ㈠..㉇
+^3280..32b0        cjk ideograph                            # ㊀..㊰
 #...........................................................................................................
 u-cjk-rad1         cjk ideograph kxr                        # block: Kangxi Radicals
 u-cjk-rad2         cjk ideograph                            # block: CJK Radicals Supplement
@@ -54,6 +57,8 @@ u-yijng            cjk yijing hexagram                      # block: Yijing Hexa
 u-txj-sym          cjk yijing taixuanjing tetragram         # block: Tai Xuan Jing Symbols
 #...........................................................................................................
 u-cjk-cmp          cjk                                      # block: CJK Compatibility
+^337b..337f        cjk ideograph                            # ㍻㍼㍽㍾㍿
+#...........................................................................................................
 u-cjk-cmpi1        cjk ideograph                            # block: CJK Compatibility Ideographs
 u-cjk-cmpi2        cjk ideograph                            # block: CJK Compatibility Ideographs Supplement
 #...........................................................................................................
