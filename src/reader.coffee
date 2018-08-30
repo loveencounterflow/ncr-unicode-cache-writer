@@ -325,16 +325,17 @@ append_tag = ( S, interval, tag ) ->
 # MAIN
 #-----------------------------------------------------------------------------------------------------------
 @read = ( handler ) ->
+  self = @
   #.........................................................................................................
   intervals = []
   S         = { intervals, }
   #.........................................................................................................
-  step ( resume ) =>
-    yield @read_assigned_codepoints   S, resume
-    yield @read_planes_and_areas      S, resume
-    yield @read_block_names           S, resume
-    yield @read_rsgs_and_block_names  S, resume
-    yield @read_tags                  S, resume
+  step ( resume ) ->
+    yield self.read_assigned_codepoints   S, resume
+    yield self.read_planes_and_areas      S, resume
+    yield self.read_block_names           S, resume
+    yield self.read_rsgs_and_block_names  S, resume
+    yield self.read_tags                  S, resume
     add_comments_to_intervals S
     handler null, S
   #.........................................................................................................

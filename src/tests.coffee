@@ -45,7 +45,8 @@ s   = ( x ) -> JSON.stringify x
 # TESTS
 #-----------------------------------------------------------------------------------------------------------
 @[ "demo" ] = ( T, done ) ->
-  step ( resume ) =>
+  self = @
+  step ( resume ) ->
     yield CW.main resume
     help 'ok'
     done()
@@ -54,7 +55,8 @@ s   = ( x ) -> JSON.stringify x
 
 #-----------------------------------------------------------------------------------------------------------
 @[ "superficial API test" ] = ( T, done ) ->
-  step ( resume ) =>
+  self = @
+  step ( resume ) ->
     S         = yield CW.read           resume
     intervals = yield CW.read_intervals resume
     #.......................................................................................................

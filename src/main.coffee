@@ -54,8 +54,13 @@ ISL                       = require 'interskiplist'
 @write = ( S, handler = null ) ->
   @read_intervals ( error, intervals ) =>
     return handler error if error?
-    json = JSON.stringify intervals, null, '  '
-    echo json
+    # json = JSON.stringify intervals, null, '  '
+    # echo json
+    echo '['
+    for idx in [ 0 ... intervals.length - 2 ] by +1
+      echo ( JSON.stringify intervals[ idx ] ) + ','
+    echo ( JSON.stringify intervals[ intervals.length - 1 ] )
+    echo ']'
     handler() if handler?
   #.........................................................................................................
   return null
